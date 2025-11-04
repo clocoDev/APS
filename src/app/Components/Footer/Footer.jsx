@@ -82,6 +82,7 @@ const Footer = () => {
                 fontSize: "15px",
                 color: "#181818",
                 lineHeight: 1.7,
+                letterSpacing: "0.8px",
                 maxWidth: "350px",
               }}
             >
