@@ -9,13 +9,6 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import "./HeroBanner.css";
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
 
 const HeroWrapper = styled(Box)(({ theme }) => ({
   position: "relative",
@@ -76,7 +69,7 @@ const ContentWrapper = styled(Container)({
   padding: "10px 20px",
 });
 
-const BookButton = styled(Button)(({ theme }) => ({
+const FirstButton = styled(Button)(({ theme }) => ({
   backgroundColor: "#B38349",
   color: "white",
   padding: "5px 20px",
@@ -94,7 +87,7 @@ const BookButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const SignUpButton = styled(Button)(({ theme }) => ({
+const SecondButton = styled(Button)(({ theme }) => ({
   backgroundColor: "#121212",
   color: "white",
   padding: "4px 20px",
@@ -241,14 +234,14 @@ const HeroBanner = () => {
                     sx={{ flexWrap: "wrap", gap: 2 }}
                   >
                     {slide.button1?.text && (
-                      <BookButton href={slide.button1.link}>
+                      <FirstButton href={slide.button1.link}>
                         {slide.button1.text}
-                      </BookButton>
+                      </FirstButton>
                     )}
                     {slide.button2?.text && (
-                      <SignUpButton href={slide.button2.link}>
+                      <SecondButton href={slide.button2.link}>
                         {slide.button2.text}
-                      </SignUpButton>
+                      </SecondButton>
                     )}
                   </Stack>
                 )}
