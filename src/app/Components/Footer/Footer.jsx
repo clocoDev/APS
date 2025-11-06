@@ -192,7 +192,7 @@ const Footer = () => {
             variant="body2"
             sx={{ color: "#181818", fontSize: "13px" }}
           >
-            Copyright 2025 Clooc.com.au © All rights reserved
+            Copyright 2025 Cloco.com.au © All rights reserved
           </Typography>
           <Box sx={{ display: "flex", gap: 3 }}>
             <FooterLink
