@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Box, Container, Typography, Button, Grid, Stack } from "@mui/material";
+import { Box, Typography, Button, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
@@ -187,7 +187,7 @@ const Testimonial = () => {
                         textAlign: { xs: "center", sm: "center", lg: "right" },
                       }}
                     >
-                      "{testimonial.text}"
+                      {`"${testimonial.text}"`}
                     </Typography>
 
                     <Typography
@@ -251,10 +251,9 @@ const Testimonial = () => {
                 maxWidth: "550px",
               }}
             >
-              We're always looking for talented, professional acting tutors to
-              join the APS family. Share your knowledge, inspire the next
-              generation, and be part of a studio that values creativity and
-              excellence.
+              {
+                "We're always looking for talented, professional acting tutors to join the APS family. Share your knowledge, inspire the next generation, and be part of a studio that values creativity and excellence."
+              }
             </Typography>
 
             <Box sx={{ mb: 4 }}>
