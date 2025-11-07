@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
-import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
@@ -18,6 +17,8 @@ import { FaRegUser } from "react-icons/fa6";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { MdSearch } from "react-icons/md";
 import { usePathname } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { fetchAllBanners } from "@/redux/slices/bannerSlice";
 
 const AppBarStyled = styled(AppBar)(({ theme }) => ({
   justifyContent: "center",
@@ -35,8 +36,13 @@ const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
   justifyContent: "space-between",
 }));
 
-const Header = (props) => {
+const Header = () => {
   const router = usePathname();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAllBanners());
+  }, [dispatch]);
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const lgDown = useMediaQuery((theme) => theme.breakpoints.down("lg"));
@@ -50,6 +56,7 @@ const Header = (props) => {
       const isScrolled = window.scrollY > 50;
       setScrolled(isScrolled);
     };
+    handleScroll();
 
     window.addEventListener("scroll", handleScroll);
 

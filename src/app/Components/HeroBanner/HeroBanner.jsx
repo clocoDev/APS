@@ -1,14 +1,37 @@
 "use client";
 import React from "react";
-import { Box, Container, Typography, Button, Stack } from "@mui/material";
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Stack,
+  Skeleton,
+  Grid,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import "./HeroBanner.css";
+
+const BannerSkeleton = () => {
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm={6} md={4}>
+        <Box>
+          <Skeleton variant="rectangular" width="100%" height={700} />
+          <Skeleton variant="text" sx={{ mt: 1 }} />
+          <Skeleton variant="text" width="60%" />
+        </Box>
+      </Grid>
+    </Grid>
+  );
+};
 
 const HeroWrapper = styled(Box)(({ theme }) => ({
   position: "relative",
@@ -23,7 +46,7 @@ const HeroWrapper = styled(Box)(({ theme }) => ({
     height: "80vh",
   },
   [theme.breakpoints.up("lg")]: {
-    height: "100vh",
+    height: "700px",
   },
 }));
 
@@ -108,50 +131,10 @@ const SecondButton = styled(Button)(({ theme }) => ({
 }));
 
 const HeroBanner = () => {
-  const slides = [
-    {
-      type: "image",
-      src: "/banner1.png",
-      title: "Welcome to Acting Performance Studio",
-      subtitle: "Transform your passion into performance",
-      button1: {
-        text: "Book a Trial",
-        link: "/book-trial",
-      },
-      button2: {
-        text: "Sign Up",
-        link: "/signup",
-      },
-    },
-    {
-      type: "video",
-      src: "/banner2.mp4",
-      title: "Unleash Your Creativity",
-      subtitle: "Professional acting classes for all ages",
-      button1: {
-        text: "View Classes",
-        link: "/classes",
-      },
-      button2: {
-        text: "Learn More",
-        link: "/about",
-      },
-    },
-    {
-      type: "image",
-      src: "/banner3.png",
-      title: "Build Confidence on Stage",
-      subtitle: "",
-      button1: {
-        text: "Get Started",
-        link: "/signup",
-      },
-      button2: {
-        text: "",
-        link: "",
-      },
-    },
-  ];
+  const { banners, loading, error } = useSelector((state) => state.banner);
+
+  if (loading) return <BannerSkeleton />;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <HeroWrapper>
@@ -171,26 +154,26 @@ const HeroBanner = () => {
         loop={true}
         style={{ width: "100%", height: "100%" }}
       >
-        {slides.map((slide, index) => (
+        {banners?.map((slide, index) => (
           <SwiperSlide key={index}>
             <BackgroundMedia>
-              {slide.type === "image" ? (
+              {slide?.mediaType?.startsWith("image") ? (
                 <Image
-                  src={slide.src}
-                  alt={slide.title}
+                  src={slide?.mediaUrl}
+                  alt={slide?.title}
                   fill
                   style={{ objectFit: "cover" }}
                   priority={index === 0}
                 />
               ) : (
                 <video autoPlay loop muted playsInline>
-                  <source src={slide.src} type="video/mp4" />
+                  <source src={slide?.mediaUrl} type="video/mp4" />
                 </video>
               )}
             </BackgroundMedia>
             <SlideContent>
               <ContentWrapper maxWidth="lg">
-                {slide.title && (
+                {slide?.title && (
                   <Typography
                     variant="h1"
                     sx={{
@@ -209,10 +192,10 @@ const HeroBanner = () => {
                       maxWidth: "600px",
                     }}
                   >
-                    {slide.title}
+                    {slide?.title}
                   </Typography>
                 )}
-                {slide.subtitle && (
+                {slide?.subtitle && (
                   <Typography
                     variant="h5"
                     sx={{
@@ -224,23 +207,23 @@ const HeroBanner = () => {
                       fontWeight: 300,
                     }}
                   >
-                    {slide.subtitle}
+                    {slide?.subtitle}
                   </Typography>
                 )}
-                {(slide.button1?.text || slide.button2?.text) && (
+                {(slide?.button1Text || slide?.button2Text) && (
                   <Stack
                     direction="row"
                     spacing={2}
                     sx={{ flexWrap: "wrap", gap: 2 }}
                   >
-                    {slide.button1?.text && (
-                      <FirstButton href={slide.button1.link}>
-                        {slide.button1.text}
+                    {slide?.button1Text && (
+                      <FirstButton href={slide?.button1Link}>
+                        {slide.button1Text}
                       </FirstButton>
                     )}
-                    {slide.button2?.text && (
-                      <SecondButton href={slide.button2.link}>
-                        {slide.button2.text}
+                    {slide?.button2Text && (
+                      <SecondButton href={slide?.button2Link}>
+                        {slide?.button2Text}
                       </SecondButton>
                     )}
                   </Stack>

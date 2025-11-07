@@ -62,7 +62,6 @@ const Footer = () => {
         <Grid container spacing={4}>
           {/* Left Section - Logo and Description */}
           <Grid
-            item
             size={{
               xs: 12,
               sm: 6,
@@ -93,7 +92,6 @@ const Footer = () => {
 
           {/* Our Classes */}
           <Grid
-            item
             size={{
               xs: 6,
               sm: 6,
@@ -112,7 +110,6 @@ const Footer = () => {
 
           {/* Quick Links */}
           <Grid
-            item
             size={{
               xs: 6,
               sm: 6,
@@ -133,7 +130,6 @@ const Footer = () => {
 
           {/* Contact Us */}
           <Grid
-            item
             size={{
               xs: 12,
               sm: 6,
