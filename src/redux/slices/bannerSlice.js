@@ -1,26 +1,12 @@
-"use client";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchAllBanners = createAsyncThunk("banner/fetchAll", async () => {
-  try {
-    const cached = localStorage.getItem("allBanners");
-    if (cached) {
-      return JSON.parse(cached);
-    }
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/banner/get`
-    );
-    localStorage.setItem("allBanners", JSON.stringify(res.data.banner));
-
-    return res.data.banner;
-  } catch (error) {
-    const cached = localStorage.getItem("allBanners");
-    if (cached) {
-      return JSON.parse(cached);
-    }
-    throw error;
-  }
+  const res = await axios.get(
+    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/banner/get`
+  );
+  localStorage.setItem("allBanners", JSON.stringify(res.data.banner));
+  return res.data.banner;
 });
 
 const bannerSlice = createSlice({

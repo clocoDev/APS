@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -13,11 +13,12 @@ import { styled } from "@mui/material/styles";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import Image from "next/image";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import "./HeroBanner.css";
+import { fetchAllBanners } from "@/redux/slices/bannerSlice";
 
 const BannerSkeleton = () => {
   return (
@@ -25,8 +26,6 @@ const BannerSkeleton = () => {
       <Grid item xs={12} sm={6} md={4}>
         <Box>
           <Skeleton variant="rectangular" width="100%" height={700} />
-          <Skeleton variant="text" sx={{ mt: 1 }} />
-          <Skeleton variant="text" width="60%" />
         </Box>
       </Grid>
     </Grid>
@@ -132,6 +131,27 @@ const SecondButton = styled(Button)(({ theme }) => ({
 
 const HeroBanner = () => {
   const { banners, loading, error } = useSelector((state) => state.banner);
+  const [bannerSlide, setBannerSlide] = useState(banners);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAllBanners());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        if (banners?.length > 0) {
+          const stored = JSON.parse(localStorage.getItem("allBanners") || "[]");
+          queueMicrotask(() => setBannerSlide(stored));
+        } else {
+          localStorage.setItem("allBanners", JSON.stringify(banners) || "[]");
+        }
+      } catch {
+        queueMicrotask(() => setBannerSlide([]));
+      }
+    }
+  }, [banners]);
 
   if (loading) return <BannerSkeleton />;
   if (error) return <p>Error: {error}</p>;
@@ -154,7 +174,7 @@ const HeroBanner = () => {
         loop={true}
         style={{ width: "100%", height: "100%" }}
       >
-        {banners?.map((slide, index) => (
+        {bannerSlide?.map((slide, index) => (
           <SwiperSlide key={index}>
             <BackgroundMedia>
               {slide?.mediaType?.startsWith("image") ? (
