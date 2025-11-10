@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, Button, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,6 +10,8 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import "./Testimonial.css";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchReviewDetails } from "@/redux/slices/testimonialSlice";
 
 const SectionWrapper = styled(Box)({
   position: "relative",
@@ -86,24 +88,47 @@ const DecorativeElement = styled(Box)({
 });
 
 const Testimonial = () => {
-  const testimonials = [
-    {
-      text: "Acting Performance Studio has been transformative for my daughter. The teachers are incredible professionals who really care about each student. We have seen her confidence grow tremendously since starting classes here!",
-      author: "Sarah Thompson",
-    },
-    {
-      text: "My son absolutely loves his classes at APS! The instructors create such a supportive environment where every child can shine. His acting skills have improved dramatically.",
-      author: "Michael Chen",
-    },
-    {
-      text: "As a parent, I couldn't be happier with the growth I've seen in my child. The professional guidance and nurturing atmosphere make all the difference.",
-      author: "Emma Wilson",
-    },
-    {
-      text: "The passion and dedication of the teachers at APS is truly remarkable. My daughter has discovered a love for performing arts that I never knew she had!",
-      author: "Jessica Martinez",
-    },
-  ];
+  const { reviews, error } = useSelector((state) => state.review);
+  const [testimonials, setTestimonials] = useState(reviews);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchReviewDetails());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        if (!reviews?.length) {
+          const stored = JSON.parse(localStorage.getItem("allReviews") || "[]");
+          queueMicrotask(() => setTestimonials(stored));
+        } else {
+          localStorage.setItem("allReviews", JSON.stringify(reviews));
+        }
+      } catch {
+        queueMicrotask(() => setTestimonials([]));
+      }
+    }
+  }, [reviews]);
+
+  // const testimonials = [
+  //   {
+  //     text: "Acting Performance Studio has been transformative for my daughter. The teachers are incredible professionals who really care about each student. We have seen her confidence grow tremendously since starting classes here!",
+  //     author: "Sarah Thompson",
+  //   },
+  //   {
+  //     text: "My son absolutely loves his classes at APS! The instructors create such a supportive environment where every child can shine. His acting skills have improved dramatically.",
+  //     author: "Michael Chen",
+  //   },
+  //   {
+  //     text: "As a parent, I couldn't be happier with the growth I've seen in my child. The professional guidance and nurturing atmosphere make all the difference.",
+  //     author: "Emma Wilson",
+  //   },
+  //   {
+  //     text: "The passion and dedication of the teachers at APS is truly remarkable. My daughter has discovered a love for performing arts that I never knew she had!",
+  //     author: "Jessica Martinez",
+  //   },
+  // ];
 
   const benefits = [
     "Flexible teaching opportunities",
@@ -111,6 +136,7 @@ const Testimonial = () => {
     "Work with students across all age groups",
   ];
 
+  if (error) return <p>Error: {error}</p>;
   return (
     <SectionWrapper className="testimonial">
       <Stack direction={{ sm: "column", lg: "row" }}>
@@ -167,44 +193,70 @@ const Testimonial = () => {
               loop={true}
               style={{ width: "100%", paddingBottom: "10px" }}
             >
-              {testimonials.map((testimonial, index) => (
-                <SwiperSlide key={index}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography
+              {testimonials?.length > 0 ? (
+                testimonials.map((testimonial, index) => (
+                  <SwiperSlide key={index} style={{ height: "max-content" }}>
+                    <Box
                       sx={{
-                        color: "#181818",
-                        fontFamily: "var(--font-inter)",
-                        fontSize: { xs: "14px", md: "15px" },
-                        lineHeight: 2.5,
-                        letterSpacing: "0.5px",
-                        mb: 3,
-                        textAlign: { xs: "center", sm: "center", lg: "right" },
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
                       }}
                     >
-                      {`"${testimonial.text}"`}
-                    </Typography>
+                      <Typography
+                        sx={{
+                          color: "#181818",
+                          fontFamily: "var(--font-inter)",
+                          fontSize: { xs: "14px", md: "15px" },
+                          lineHeight: 2.5,
+                          letterSpacing: "0.5px",
+                          mb: 3,
+                          textAlign: {
+                            xs: "center",
+                            sm: "center",
+                            lg: "left",
+                          },
+                          display: "-webkit-box",
+                          WebkitLineClamp: 5,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {`"${testimonial?.text}"`}
+                      </Typography>
 
-                    <Typography
-                      sx={{
-                        color: "#B38349",
-                        fontFamily: "var(--font-inter)",
-                        fontSize: "15px",
-                        fontWeight: 600,
-                        mb: 2,
-                        textAlign: { xs: "center", sm: "center", lg: "right" },
-                      }}
-                    >
-                      {testimonial.author}
-                    </Typography>
-                  </Box>
-                </SwiperSlide>
-              ))}
+                      <Typography
+                        sx={{
+                          color: "#B38349",
+                          fontFamily: "var(--font-inter)",
+                          fontSize: "15px",
+                          fontWeight: 600,
+                          mb: 2,
+                          textAlign: {
+                            xs: "center",
+                            sm: "center",
+                            lg: "right",
+                          },
+                        }}
+                      >
+                        {testimonial?.author}
+                      </Typography>
+                    </Box>
+                  </SwiperSlide>
+                ))
+              ) : (
+                <Typography
+                  sx={{
+                    textAlign: "center",
+                    color: "#999",
+                    fontStyle: "italic",
+                    mt: 2,
+                  }}
+                >
+                  No reviews available.
+                </Typography>
+              )}
             </Swiper>
           </ContentBox>
         </LeftSection>

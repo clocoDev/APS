@@ -17,8 +17,6 @@ import { FaRegUser } from "react-icons/fa6";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { MdSearch } from "react-icons/md";
 import { usePathname } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { fetchAllBanners } from "@/redux/slices/bannerSlice";
 
 const AppBarStyled = styled(AppBar)(({ theme }) => ({
   justifyContent: "center",
@@ -38,11 +36,6 @@ const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
 
 const Header = () => {
   const router = usePathname();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchAllBanners());
-  }, [dispatch]);
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const lgDown = useMediaQuery((theme) => theme.breakpoints.down("lg"));
