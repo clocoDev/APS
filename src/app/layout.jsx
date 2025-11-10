@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Inter, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import Header from "./Components/Header/Header";
 import MuiThemeProvider from "./utils/Providers/ThemeProvider";
@@ -11,6 +11,13 @@ const inter = Inter({
   display: "swap",
 });
 
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-great-vibes",
+  display: "swap",
+});
+
 export const metadata = {
   title: "Acting Performance Studio",
   description: "Created by Team Cloco",
@@ -19,7 +26,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${inter.variable} ${greatVibes.variable} antialiased`}>
         <Providers>
           <MuiThemeProvider>
             <Header />
