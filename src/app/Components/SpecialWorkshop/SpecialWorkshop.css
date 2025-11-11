@@ -1,0 +1,27 @@
+.special-workshop .swiper-pagination {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+
+.special-workshop .workshop-bullet {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+  margin: 0 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.special-workshop .workshop-bullet-active {
+  background: #c99a4f;
+  width: 10px;
+  height: 10px;
+}
