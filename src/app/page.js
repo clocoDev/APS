@@ -4,6 +4,7 @@ import Testimonial from "./Components/Testimonial/Testimonial";
 import Workshop from "./Components/Workshop/Workshop";
 import CoursesHome from "./Components/CoursesHome/CoursesHome";
 import Vision from "./Components/Vision/Vision";
+import SpecialWorkshop from "./Components/SpecialWorkshop/SpecialWorkshop";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Workshop />
       <CoursesHome />
       <Vision />
+      <SpecialWorkshop />
     </>
 
   );
