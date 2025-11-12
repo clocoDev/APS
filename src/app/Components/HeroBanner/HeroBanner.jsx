@@ -23,7 +23,7 @@ import { fetchAllBanners } from "@/redux/slices/bannerSlice";
 const BannerSkeleton = () => {
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={6} md={4}>
+      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
         <Box>
           <Skeleton variant="rectangular" width="100%" height={700} />
         </Box>
