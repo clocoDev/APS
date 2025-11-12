@@ -111,25 +111,6 @@ const Testimonial = () => {
     }
   }, [reviews]);
 
-  // const testimonials = [
-  //   {
-  //     text: "Acting Performance Studio has been transformative for my daughter. The teachers are incredible professionals who really care about each student. We have seen her confidence grow tremendously since starting classes here!",
-  //     author: "Sarah Thompson",
-  //   },
-  //   {
-  //     text: "My son absolutely loves his classes at APS! The instructors create such a supportive environment where every child can shine. His acting skills have improved dramatically.",
-  //     author: "Michael Chen",
-  //   },
-  //   {
-  //     text: "As a parent, I couldn't be happier with the growth I've seen in my child. The professional guidance and nurturing atmosphere make all the difference.",
-  //     author: "Emma Wilson",
-  //   },
-  //   {
-  //     text: "The passion and dedication of the teachers at APS is truly remarkable. My daughter has discovered a love for performing arts that I never knew she had!",
-  //     author: "Jessica Martinez",
-  //   },
-  // ];
-
   const benefits = [
     "Flexible teaching opportunities",
     "Supportive and collaborative environment",
@@ -275,6 +256,7 @@ const Testimonial = () => {
               src="/halfStar.png"
               alt=""
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               style={{ objectFit: "contain" }}
             />
           </DecorativeElement>

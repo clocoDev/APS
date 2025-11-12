@@ -5,6 +5,7 @@ import Workshop from "./Components/Workshop/Workshop";
 import CoursesHome from "./Components/CoursesHome/CoursesHome";
 import Vision from "./Components/Vision/Vision";
 import SpecialWorkshop from "./Components/SpecialWorkshop/SpecialWorkshop";
+import Enquiry from "./Components/Enquiry/Enquiry";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <CoursesHome />
       <Vision />
       <SpecialWorkshop />
+      <Enquiry />
     </>
 
   );
