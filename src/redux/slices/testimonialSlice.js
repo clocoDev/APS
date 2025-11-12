@@ -6,13 +6,10 @@ export const fetchReviewDetails = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/testimonial`
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/testimonial/get`
       );
-      localStorage.setItem(
-        "allReviews",
-        JSON.stringify(response.data.result.reviews)
-      );
-      return response.data.result.reviews;
+      localStorage.setItem("allReviews", JSON.stringify(response.data.result));
+      return response.data.result;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch place details"

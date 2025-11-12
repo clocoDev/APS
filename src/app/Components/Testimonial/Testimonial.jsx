@@ -223,7 +223,7 @@ const Testimonial = () => {
                           textOverflow: "ellipsis",
                         }}
                       >
-                        {`"${testimonial?.text}"`}
+                        {`"${testimonial?.reviewText}"`}
                       </Typography>
 
                       <Typography
@@ -240,7 +240,7 @@ const Testimonial = () => {
                           },
                         }}
                       >
-                        {testimonial?.author}
+                        {testimonial?.reviewerName}
                       </Typography>
                     </Box>
                   </SwiperSlide>
