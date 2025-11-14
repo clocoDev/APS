@@ -15,7 +15,7 @@ const SectionWrapper = styled(Box)(({ theme }) => ({
   height: "700px",
   overflow: "hidden",
   [theme.breakpoints.between(0, 550)]: {
-    height: "500px",
+    height: "525px",
   },
 }));
 
