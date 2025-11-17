@@ -1,9 +1,8 @@
 import { Inter, Great_Vibes } from "next/font/google";
 import "./globals.css";
-import Header from "./Components/Header/Header";
 import MuiThemeProvider from "./utils/Providers/ThemeProvider";
-import Footer from "./Components/Footer/Footer";
 import Providers from "../redux/store/Provider";
+import LayoutClient from "./Components/LayoutClient/LayoutClient";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,9 +28,7 @@ export default function RootLayout({ children }) {
       <body className={`${inter.variable} ${greatVibes.variable} antialiased`}>
         <Providers>
           <MuiThemeProvider>
-            <Header />
-            {children}
-            <Footer />
+            <LayoutClient>{children}</LayoutClient>
           </MuiThemeProvider>
         </Providers>
       </body>
