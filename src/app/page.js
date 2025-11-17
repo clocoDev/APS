@@ -6,6 +6,7 @@ import CoursesHome from "./Components/CoursesHome/CoursesHome";
 import Vision from "./Components/Vision/Vision";
 import SpecialWorkshop from "./Components/SpecialWorkshop/SpecialWorkshop";
 import Enquiry from "./Components/Enquiry/Enquiry";
+import Instagram from "./Components/Instagram/Instagram";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       <Vision />
       <SpecialWorkshop />
       <Enquiry />
+      <Instagram />
     </>
 
   );
