@@ -1,13 +1,27 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchAllBanners = createAsyncThunk("banner/fetchAll", async () => {
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/banner/get`
-  );
-  localStorage.setItem("allBanners", JSON.stringify(res.data.banner));
-  return res.data.banner;
-});
+export const fetchAllBanners = createAsyncThunk(
+  "banner/fetchAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        "https://aps-backend.cloco.com.au/api/banner/get"
+      );
+      localStorage.setItem(
+        "allBanners",
+        JSON.stringify(response?.data?.banner)
+      );
+      return response?.data?.banner;
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        error.message ||
+        "Failed to fetch banners";
+      return rejectWithValue(message);
+    }
+  }
+);
 
 const bannerSlice = createSlice({
   name: "banner",

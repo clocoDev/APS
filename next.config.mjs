@@ -8,6 +8,7 @@ const nextConfig = {
         pathname: "/aps-australia-storage/**",
       },
     ],
+    unoptimized: true,
   },
   reactCompiler: true,
 };

@@ -6,7 +6,7 @@ export const fetchReviewDetails = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/testimonial/get`
+        `https://aps-backend.cloco.com.au/api/testimonial/get`
       );
       localStorage.setItem("allReviews", JSON.stringify(response.data.result));
       return response.data.result;
