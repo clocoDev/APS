@@ -110,7 +110,7 @@ const Header = () => {
                 <Navigations />
               </Stack>
               <div>
-                <IconButton href="/auth/auth1/login" sx={{ color: "white" }}>
+                <IconButton href="/Pages/LoginPage" sx={{ color: "white" }}>
                   <FaRegUser size={20} />
                 </IconButton>
                 <IconButton href="/auth/auth1/login" sx={{ color: "white" }}>
