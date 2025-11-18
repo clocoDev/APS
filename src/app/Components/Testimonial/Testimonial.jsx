@@ -99,7 +99,7 @@ const Testimonial = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
-        if (!reviews?.length) {
+        if (reviews?.length > 0) {
           const stored = JSON.parse(localStorage.getItem("allReviews") || "[]");
           queueMicrotask(() => setTestimonials(stored));
         } else {
