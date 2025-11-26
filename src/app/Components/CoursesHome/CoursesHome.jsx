@@ -1,9 +1,55 @@
 "use client";
-import React from "react";
-import { Box, Container, Typography, Button, Grid, Card } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Grid,
+  Card,
+  Skeleton,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllCourses } from "@/redux/slices/courseSlice";
+
+const CourseSkeleton = () => {
+  return (
+    <Grid
+      size={{
+        xs: 12,
+        sm: 6,
+        md: 4,
+        lg: 4,
+      }}
+    >
+      <div
+        style={{
+          borderRadius: "12px",
+          overflow: "hidden",
+          background: "#fff",
+          boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+        }}
+      >
+        <Skeleton variant="rectangular" height={220} />
+        <div style={{ padding: "16px" }}>
+          <Skeleton width="40%" height={20} style={{ marginTop: 10 }} />
+          <Skeleton width="80%" height={26} style={{ marginTop: 10 }} />
+          <Skeleton width="100%" height={18} style={{ marginTop: 10 }} />
+          <Skeleton width="70%" height={18} style={{ marginTop: 6 }} />
+          <Skeleton
+            variant="rectangular"
+            width={100}
+            height={30}
+            style={{ marginTop: 20, borderRadius: 6 }}
+          />
+        </div>
+      </div>
+    </Grid>
+  );
+};
 
 const SectionWrapper = styled(Box)(({ theme }) => ({
   position: "relative",
@@ -172,62 +218,121 @@ const TrialLink = styled(Box)({
 });
 
 const CoursesHome = () => {
-  const courses = [
-    {
-      id: 1,
-      title: "Kids Acting Classes",
-      ageRange: "AGES 7 - 12",
-      description:
-        "Fun, creative classes for children aged 7-12. Boost confidence, imagination and social skills.",
-      image: "/course1.png",
-      link: "/",
-    },
-    {
-      id: 2,
-      title: "Teens Acting Classes",
-      ageRange: "AGES 13 - 17",
-      description:
-        "Develop performance techniques, build confidence and prepare for auditions. Create skill reels for social media.",
-      image: "/course2.png",
-      link: "/",
-    },
-    {
-      id: 3,
-      title: "Adults Acting Classes",
-      ageRange: "AGES 18+",
-      description:
-        "From beginners to experienced actors, our adult classes cater to all levels with professional techniques.",
-      image: "/course3.png",
-      link: "/",
-    },
-    {
-      id: 4,
-      title: "Musical Theatre - Juniors",
-      ageRange: "AGES 4 - 6",
-      description:
-        "Introduce young performers to music, movement, and creative expression through musical theatre.",
-      image: "/course4.png",
-      link: "/",
-    },
-    {
-      id: 5,
-      title: "Musical Theatre - Kids",
-      ageRange: "AGES 7 - 12",
-      description:
-        "Singing, dancing, and acting combined in a fun environment to develop triple-threat performers.",
-      image: "/course5.png",
-      link: "/",
-    },
-    {
-      id: 6,
-      title: "Musical Theatre - Teens",
-      ageRange: "AGES 13 - 17",
-      description:
-        "Advanced musical performance skills for teens, including vocal technique, choreography, and scene work.",
-      image: "/course6.png",
-      link: "/",
-    },
-  ];
+  const { courses, loading, error } = useSelector((state) => state.course);
+  const [coursesList, setCoursesList] = useState(courses);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAllCourses());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        if (courses?.length > 0) {
+          const courseItems = JSON.parse(
+            localStorage.getItem("allCourses") || "[]"
+          );
+          queueMicrotask(() =>
+            setCoursesList(courseItems.filter((item) => item.inHomePage))
+          );
+        } else {
+          localStorage.getItem("allCourses", JSON.stringify(courses) || "[]");
+        }
+      } catch {
+        queueMicrotask(() => setCoursesList([]));
+      }
+    }
+  }, [courses]);
+
+  if (loading) {
+    return (
+      <SectionWrapper>
+        <Container maxWidth="xl" sx={{ position: "relative" }}>
+          <DecorativeStar>
+            <Image
+              src="/courseStar.svg"
+              alt=""
+              fill
+              style={{ objectFit: "cover" }}
+            />
+          </DecorativeStar>
+          <HeaderWrapper>
+            <SectionTitle variant="h2">Our Courses</SectionTitle>
+            <ViewAllButton href="/">View All</ViewAllButton>
+          </HeaderWrapper>
+
+          {/* Course Cards */}
+          <GridBox>
+            <Grid container spacing={4}>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <CourseSkeleton key={i} />
+              ))}{" "}
+            </Grid>
+          </GridBox>
+        </Container>
+      </SectionWrapper>
+    );
+  }
+
+  if (error) return <p>Error: {error}</p>;
+
+  // const courses = [
+  //   {
+  //     id: 1,
+  //     title: "Kids Acting Classes",
+  //     ageRange: "AGES 7 - 12",
+  //     description:
+  //       "Fun, creative classes for children aged 7-12. Boost confidence, imagination and social skills.",
+  //     image: "/course1.png",
+  //     link: "/",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Teens Acting Classes",
+  //     ageRange: "AGES 13 - 17",
+  //     description:
+  //       "Develop performance techniques, build confidence and prepare for auditions. Create skill reels for social media.",
+  //     image: "/course2.png",
+  //     link: "/",
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Adults Acting Classes",
+  //     ageRange: "AGES 18+",
+  //     description:
+  //       "From beginners to experienced actors, our adult classes cater to all levels with professional techniques.",
+  //     image: "/course3.png",
+  //     link: "/",
+  //   },
+  //   {
+  //     id: 4,
+  //     title: "Musical Theatre - Juniors",
+  //     ageRange: "AGES 4 - 6",
+  //     description:
+  //       "Introduce young performers to music, movement, and creative expression through musical theatre.",
+  //     image: "/course4.png",
+  //     link: "/",
+  //   },
+  //   {
+  //     id: 5,
+  //     title: "Musical Theatre - Kids",
+  //     ageRange: "AGES 7 - 12",
+  //     description:
+  //       "Singing, dancing, and acting combined in a fun environment to develop triple-threat performers.",
+  //     image: "/course5.png",
+  //     link: "/",
+  //   },
+  //   {
+  //     id: 6,
+  //     title: "Musical Theatre - Teens",
+  //     ageRange: "AGES 13 - 17",
+  //     description:
+  //       "Advanced musical performance skills for teens, including vocal technique, choreography, and scene work.",
+  //     image: "/course6.png",
+  //     link: "/",
+  //   },
+  // ];
 
   return (
     <SectionWrapper>
@@ -248,48 +353,52 @@ const CoursesHome = () => {
         {/* Course Cards */}
         <GridBox>
           <Grid container spacing={4}>
-            {courses.map((course) => (
-              <Grid
-                size={{
-                  xs: 12,
-                  sm: 6,
-                  md: 4,
-                  lg: 4,
-                }}
-                key={course.id}
-              >
-                <CourseCard>
-                  <CourseImageWrapper>
-                    <Image
-                      src={course.image}
-                      alt={course.title}
-                      fill
-                      style={{ objectFit: "cover" }}
-                    />
-                  </CourseImageWrapper>
-
-                  {/* Course Content */}
-                  <CourseContent>
-                    <CardStar>
+            {coursesList &&
+              coursesList.length > 0 &&
+              coursesList?.map((course) => (
+                <Grid
+                  size={{
+                    xs: 12,
+                    sm: 6,
+                    md: 4,
+                    lg: 4,
+                  }}
+                  key={course?.id}
+                >
+                  <CourseCard>
+                    <CourseImageWrapper>
                       <Image
-                        src="/secureStar.png"
-                        alt=""
-                        width={40}
-                        height={40}
-                        style={{ width: "100%", height: "auto" }}
+                        src={course?.mediaUrl}
+                        alt={course?.title}
+                        fill
+                        style={{ objectFit: "cover" }}
                       />
-                    </CardStar>
-                    <AgeLabel>{course.ageRange}</AgeLabel>
-                    <CourseTitle>{course.title}</CourseTitle>
-                    <CourseDescription>{course.description}</CourseDescription>
-                    <TrialLink>
-                      Trial Now
-                      <FaArrowRight size={14} />
-                    </TrialLink>
-                  </CourseContent>
-                </CourseCard>
-              </Grid>
-            ))}
+                    </CourseImageWrapper>
+
+                    {/* Course Content */}
+                    <CourseContent>
+                      <CardStar>
+                        <Image
+                          src="/secureStar.png"
+                          alt=""
+                          width={40}
+                          height={40}
+                          style={{ width: "100%", height: "auto" }}
+                        />
+                      </CardStar>
+                      <AgeLabel>AGES {course?.ageRange}</AgeLabel>
+                      <CourseTitle>{course?.title}</CourseTitle>
+                      <CourseDescription>
+                        {course?.description}
+                      </CourseDescription>
+                      <TrialLink>
+                        Trial Now
+                        <FaArrowRight size={14} />
+                      </TrialLink>
+                    </CourseContent>
+                  </CourseCard>
+                </Grid>
+              ))}
           </Grid>
         </GridBox>
       </Container>

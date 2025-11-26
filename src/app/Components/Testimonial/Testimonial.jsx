@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Button, Stack } from "@mui/material";
+import { Box, Typography, Button, Stack, Skeleton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
@@ -12,6 +12,41 @@ import "swiper/css/effect-fade";
 import "./Testimonial.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchReviewDetails } from "@/redux/slices/testimonialSlice";
+
+const TestimonialSkeleton = () => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <Skeleton
+        variant="rectangular"
+        sx={{
+          width: "100%",
+          height: "120px",
+          borderRadius: "8px",
+          mb: 3,
+        }}
+        animation="wave"
+      />
+
+      <Skeleton
+        variant="text"
+        sx={{
+          width: "40%",
+          height: "20px",
+          ml: { lg: "auto" },
+          mb: 2,
+          textAlign: "right",
+        }}
+        animation="wave"
+      />
+    </Box>
+  );
+};
 
 const SectionWrapper = styled(Box)({
   position: "relative",
@@ -88,7 +123,7 @@ const DecorativeElement = styled(Box)({
 });
 
 const Testimonial = () => {
-  const { reviews, error } = useSelector((state) => state.review);
+  const { reviews, loading, error } = useSelector((state) => state.review);
   const [testimonials, setTestimonials] = useState(reviews);
   const dispatch = useDispatch();
 
@@ -100,10 +135,12 @@ const Testimonial = () => {
     if (typeof window !== "undefined") {
       try {
         if (reviews?.length > 0) {
-          const stored = JSON.parse(localStorage.getItem("allReviews") || "[]");
-          queueMicrotask(() => setTestimonials(stored));
+          const testimonialItems = JSON.parse(
+            localStorage.getItem("allReviews") || "[]"
+          );
+          queueMicrotask(() => setTestimonials(testimonialItems));
         } else {
-          localStorage.setItem("allReviews", JSON.stringify(reviews));
+          localStorage.getItem("allReviews", JSON.stringify(reviews));
         }
       } catch {
         queueMicrotask(() => setTestimonials([]));
@@ -116,8 +153,7 @@ const Testimonial = () => {
     "Supportive and collaborative environment",
     "Work with students across all age groups",
   ];
-
-  if (error) return <p>Error: {error}</p>;
+  if (loading) if (error) return <p>Error: {error}</p>;
   return (
     <SectionWrapper className="testimonial">
       <Stack direction={{ sm: "column", lg: "row" }}>
@@ -158,24 +194,24 @@ const Testimonial = () => {
             </Typography>
 
             {/* Testimonials Carousel */}
-            <Swiper
-              modules={[Autoplay, Pagination, EffectFade]}
-              effect="fade"
-              fadeEffect={{ crossFade: true }}
-              autoplay={{
-                delay: 50000,
-                disableOnInteraction: false,
-              }}
-              pagination={{
-                clickable: true,
-                bulletClass: "testimonial-bullet",
-                bulletActiveClass: "testimonial-bullet-active",
-              }}
-              loop={true}
-              style={{ width: "100%", paddingBottom: "10px" }}
-            >
-              {testimonials?.length > 0 ? (
-                testimonials.map((testimonial, index) => (
+            {!loading && testimonials?.length > 0 ? (
+              <Swiper
+                modules={[Autoplay, Pagination, EffectFade]}
+                effect="fade"
+                fadeEffect={{ crossFade: true }}
+                autoplay={{
+                  delay: 50000,
+                  disableOnInteraction: false,
+                }}
+                pagination={{
+                  clickable: true,
+                  bulletClass: "testimonial-bullet",
+                  bulletActiveClass: "testimonial-bullet-active",
+                }}
+                loop={true}
+                style={{ width: "100%", paddingBottom: "10px" }}
+              >
+                {testimonials.map((testimonial, index) => (
                   <SwiperSlide key={index} style={{ height: "max-content" }}>
                     <Box
                       sx={{
@@ -225,20 +261,11 @@ const Testimonial = () => {
                       </Typography>
                     </Box>
                   </SwiperSlide>
-                ))
-              ) : (
-                <Typography
-                  sx={{
-                    textAlign: "center",
-                    color: "#999",
-                    fontStyle: "italic",
-                    mt: 2,
-                  }}
-                >
-                  No reviews available.
-                </Typography>
-              )}
-            </Swiper>
+                ))}
+              </Swiper>
+            ) : (
+              <TestimonialSkeleton />
+            )}
           </ContentBox>
         </LeftSection>
         <RightSection>
