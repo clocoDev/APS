@@ -7,7 +7,6 @@ import {
   Button,
   Stack,
   Skeleton,
-  Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -22,13 +21,80 @@ import { fetchAllBanners } from "@/redux/slices/bannerSlice";
 
 const BannerSkeleton = () => {
   return (
-    <Grid container spacing={2}>
-      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-        <Box>
-          <Skeleton variant="rectangular" width="100%" height={700} />
+    <HeroWrapper>
+      <Box
+        sx={{
+          width: "100%",
+          height: "100%",
+          position: "relative",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            inset: 0,
+          }}
+        >
+          <Skeleton
+            variant="rectangular"
+            sx={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: "#959AA6",
+            }}
+            animation="wave"
+          />
         </Box>
-      </Grid>
-    </Grid>
+
+        <SlideContent>
+          <ContentWrapper maxWidth="lg">
+            <Skeleton
+              variant="rectangular"
+              sx={{
+                width: "60%",
+                height: "40px",
+                mb: { xs: 1, sm: 2, md: 3 },
+              }}
+              animation="wave"
+            />
+
+            <Skeleton
+              variant="text"
+              sx={{
+                width: "40%",
+                height: "25px",
+                mb: { xs: 2, sm: 3, md: 4 },
+              }}
+              animation="wave"
+            />
+
+            <Stack direction="row" spacing={2} sx={{ gap: 2 }}>
+              <Skeleton
+                variant="rectangular"
+                sx={{
+                  width: "150px",
+                  height: "45px",
+                  borderRadius: "8px",
+                }}
+                animation="wave"
+              />
+
+              <Skeleton
+                variant="rectangular"
+                sx={{
+                  width: "150px",
+                  height: "45px",
+                  borderRadius: "8px",
+                }}
+                animation="wave"
+              />
+            </Stack>
+          </ContentWrapper>
+        </SlideContent>
+      </Box>
+    </HeroWrapper>
   );
 };
 
@@ -142,10 +208,12 @@ const HeroBanner = () => {
     if (typeof window !== "undefined") {
       try {
         if (banners?.length > 0) {
-          const stored = JSON.parse(localStorage.getItem("allBanners") || "[]");
-          queueMicrotask(() => setBannerSlide(stored));
+          const bannerItems = JSON.parse(
+            localStorage.getItem("allBanners") || "[]"
+          );
+          queueMicrotask(() => setBannerSlide(bannerItems));
         } else {
-          localStorage.setItem("allBanners", JSON.stringify(banners) || "[]");
+          localStorage.getItem("allBanners", JSON.stringify(banners) || "[]");
         }
       } catch {
         queueMicrotask(() => setBannerSlide([]));
@@ -174,84 +242,86 @@ const HeroBanner = () => {
         loop={true}
         style={{ width: "100%", height: "100%" }}
       >
-        {bannerSlide?.map((slide, index) => (
-          <SwiperSlide key={index}>
-            <BackgroundMedia>
-              {slide?.mediaType?.startsWith("image") ? (
-                <Image
-                  src={slide?.mediaUrl}
-                  alt={slide?.title}
-                  fill
-                  style={{ objectFit: "cover" }}
-                  priority={index === 0}
-                />
-              ) : (
-                <video autoPlay loop muted playsInline>
-                  <source src={slide?.mediaUrl} type="video/mp4" />
-                </video>
-              )}
-            </BackgroundMedia>
-            <SlideContent>
-              <ContentWrapper maxWidth="lg">
-                {slide?.title && (
-                  <Typography
-                    variant="h1"
-                    sx={{
-                      fontFamily: "var(--font-inter)",
-                      fontSize: {
-                        xs: "25px",
-                        sm: "30px",
-                        md: "45px",
-                        lg: "50px",
-                      },
-                      color: "#FFFFFF",
-                      fontWeight: 600,
-                      lineHeight: 1.3,
-                      letterSpacing: "1px",
-                      mb: { xs: 1, sm: 2, md: 3 },
-                      maxWidth: "600px",
-                    }}
-                  >
-                    {slide?.title}
-                  </Typography>
+        {bannerSlide &&
+          bannerSlide.length > 0 &&
+          bannerSlide?.map((slide, index) => (
+            <SwiperSlide key={index}>
+              <BackgroundMedia>
+                {slide?.mediaType?.startsWith("image") ? (
+                  <Image
+                    src={slide?.mediaUrl}
+                    alt={slide?.title}
+                    fill
+                    style={{ objectFit: "cover" }}
+                    priority={index === 0}
+                  />
+                ) : (
+                  <video autoPlay loop muted playsInline>
+                    <source src={slide?.mediaUrl} type="video/mp4" />
+                  </video>
                 )}
-                {slide?.subtitle && (
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      fontFamily: "var(--font-inter)",
-                      fontSize: { xs: "14px", md: "18px" },
-                      color: "#ECE1DB",
-                      mb: { xs: 2, sm: 3, md: 4 },
-                      maxWidth: "500px",
-                      fontWeight: 300,
-                    }}
-                  >
-                    {slide?.subtitle}
-                  </Typography>
-                )}
-                {(slide?.button1Text || slide?.button2Text) && (
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    sx={{ flexWrap: "wrap", gap: 2 }}
-                  >
-                    {slide?.button1Text && (
-                      <FirstButton href={slide?.button1Link}>
-                        {slide.button1Text}
-                      </FirstButton>
-                    )}
-                    {slide?.button2Text && (
-                      <SecondButton href={slide?.button2Link}>
-                        {slide?.button2Text}
-                      </SecondButton>
-                    )}
-                  </Stack>
-                )}
-              </ContentWrapper>
-            </SlideContent>
-          </SwiperSlide>
-        ))}
+              </BackgroundMedia>
+              <SlideContent>
+                <ContentWrapper maxWidth="lg">
+                  {slide?.title && (
+                    <Typography
+                      variant="h1"
+                      sx={{
+                        fontFamily: "var(--font-inter)",
+                        fontSize: {
+                          xs: "25px",
+                          sm: "30px",
+                          md: "45px",
+                          lg: "50px",
+                        },
+                        color: "#FFFFFF",
+                        fontWeight: 600,
+                        lineHeight: 1.3,
+                        letterSpacing: "1px",
+                        mb: { xs: 1, sm: 2, md: 3 },
+                        maxWidth: "600px",
+                      }}
+                    >
+                      {slide?.title}
+                    </Typography>
+                  )}
+                  {slide?.subtitle && (
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontFamily: "var(--font-inter)",
+                        fontSize: { xs: "14px", md: "18px" },
+                        color: "#ECE1DB",
+                        mb: { xs: 2, sm: 3, md: 4 },
+                        maxWidth: "500px",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {slide?.subtitle}
+                    </Typography>
+                  )}
+                  {(slide?.button1Text || slide?.button2Text) && (
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{ flexWrap: "wrap", gap: 2 }}
+                    >
+                      {slide?.button1Text && (
+                        <FirstButton href={slide?.button1Link}>
+                          {slide.button1Text}
+                        </FirstButton>
+                      )}
+                      {slide?.button2Text && (
+                        <SecondButton href={slide?.button2Link}>
+                          {slide?.button2Text}
+                        </SecondButton>
+                      )}
+                    </Stack>
+                  )}
+                </ContentWrapper>
+              </SlideContent>
+            </SwiperSlide>
+          ))}
       </Swiper>
     </HeroWrapper>
   );

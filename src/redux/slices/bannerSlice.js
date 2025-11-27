@@ -16,18 +16,26 @@ export const fetchAllBanners = createAsyncThunk(
     } catch (error) {
       const message =
         error?.response?.data?.message ||
-        error.message ||
+        error?.message ||
         "Failed to fetch banners";
       return rejectWithValue(message);
     }
   }
 );
 
+const getInitialBanners = () => {
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem("allBanners");
+    return saved ? JSON.parse(saved) : [];
+  }
+  return [];
+};
+
 const bannerSlice = createSlice({
   name: "banner",
   initialState: {
-    banners: [],
-    loading: false,
+    banners: getInitialBanners(),
+    loading: true,
     error: null,
   },
   extraReducers: (builder) => {

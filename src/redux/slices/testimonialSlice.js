@@ -8,28 +8,40 @@ export const fetchReviewDetails = createAsyncThunk(
       const response = await axios.get(
         `https://aps-backend.cloco.com.au/api/testimonial/get`
       );
-      localStorage.setItem("allReviews", JSON.stringify(response.data.result));
-      return response.data.result;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch place details"
+      localStorage.setItem(
+        "allReviews",
+        JSON.stringify(response?.data?.result)
       );
+      return response?.data?.result;
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to fetch reviews";
+      return rejectWithValue(message);
     }
   }
 );
 
+const getInitialReviews = () => {
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem("allReviews");
+    return saved ? JSON.parse(saved) : [];
+  }
+  return [];
+};
+
 const placeSlice = createSlice({
   name: "review",
   initialState: {
-    reviews: [],
-    loading: false,
+    reviews: getInitialReviews(),
+    loading: true,
     error: null,
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchReviewDetails.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(fetchReviewDetails.fulfilled, (state, action) => {
         state.loading = false;
