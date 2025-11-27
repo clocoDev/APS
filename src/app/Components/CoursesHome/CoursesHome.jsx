@@ -277,63 +277,6 @@ const CoursesHome = () => {
 
   if (error) return <p>Error: {error}</p>;
 
-  // const courses = [
-  //   {
-  //     id: 1,
-  //     title: "Kids Acting Classes",
-  //     ageRange: "AGES 7 - 12",
-  //     description:
-  //       "Fun, creative classes for children aged 7-12. Boost confidence, imagination and social skills.",
-  //     image: "/course1.png",
-  //     link: "/",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Teens Acting Classes",
-  //     ageRange: "AGES 13 - 17",
-  //     description:
-  //       "Develop performance techniques, build confidence and prepare for auditions. Create skill reels for social media.",
-  //     image: "/course2.png",
-  //     link: "/",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Adults Acting Classes",
-  //     ageRange: "AGES 18+",
-  //     description:
-  //       "From beginners to experienced actors, our adult classes cater to all levels with professional techniques.",
-  //     image: "/course3.png",
-  //     link: "/",
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "Musical Theatre - Juniors",
-  //     ageRange: "AGES 4 - 6",
-  //     description:
-  //       "Introduce young performers to music, movement, and creative expression through musical theatre.",
-  //     image: "/course4.png",
-  //     link: "/",
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "Musical Theatre - Kids",
-  //     ageRange: "AGES 7 - 12",
-  //     description:
-  //       "Singing, dancing, and acting combined in a fun environment to develop triple-threat performers.",
-  //     image: "/course5.png",
-  //     link: "/",
-  //   },
-  //   {
-  //     id: 6,
-  //     title: "Musical Theatre - Teens",
-  //     ageRange: "AGES 13 - 17",
-  //     description:
-  //       "Advanced musical performance skills for teens, including vocal technique, choreography, and scene work.",
-  //     image: "/course6.png",
-  //     link: "/",
-  //   },
-  // ];
-
   return (
     <SectionWrapper>
       <Container maxWidth="xl" sx={{ position: "relative" }}>
