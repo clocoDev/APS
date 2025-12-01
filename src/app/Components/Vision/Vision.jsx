@@ -1,9 +1,11 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Container, Typography, Button, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
 import VisionBg from "../../../../public/visionBg.png";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchVision } from "@/redux/slices/visionSlice";
 
 const SectionWrapper = styled(Box)({
   position: "relative",
@@ -118,16 +120,36 @@ const ViewMoreButton = styled(Button)(({ theme }) => ({
 }));
 
 const Vision = () => {
+  const dispatch = useDispatch();
+  const { vision, loading } = useSelector((state) => state.vision);
+
+  useEffect(() => {
+    dispatch(fetchVision());
+  }, [dispatch]);
+
+  if (loading || !vision) return null;
+
+  // ---------- UPDATED LOGIC FOR NEW LINE HANDLING ----------
+  let firstPara = vision.content;
+  let secondPara = null;
+
+  if (vision.content?.includes("\n")) {
+    const parts = vision.content.split("\n");
+    firstPara = parts[0]?.trim();
+    secondPara = parts[1]?.trim() || null;
+  }
+  // ---------------------------------------------------------
+
   return (
     <SectionWrapper>
       <ContentWrapper maxWidth="xl">
         <Grid container spacing={4} alignItems="center">
-          {/* Left Side - Circular Image */}
+          {/* Left Image */}
           <Grid size={{ xs: 12, md: 5 }}>
             <CircularImageWrapper>
               <Image
-                src="/visionImg.png"
-                alt="Happy children"
+                src={vision.mediaUrl}
+                alt={vision.title}
                 fill
                 style={{ objectFit: "cover" }}
                 priority
@@ -135,28 +157,25 @@ const Vision = () => {
             </CircularImageWrapper>
           </Grid>
 
-          {/* Right Side - Content */}
+          {/* Right Content */}
           <Grid size={{ xs: 12, md: 7 }}>
             <ContentBox>
-              <MainTitle variant="h1">Our Vision - Our Mission</MainTitle>
+              <MainTitle variant="h1">{vision.title}</MainTitle>
 
               <Subtitle>
-                {`We approach performance training with honesty, integrity 
-                    and commitment to each student's individual development.`}
+                We approach performance training with honesty, integrity 
+                and commitment to each student's individual development.
               </Subtitle>
 
-              <BodyText>
-                {`It is our belief the art of performance will make your heart
-                soar and enrich you as a human being.`}
-              </BodyText>
+              {/* Always show the first paragraph */}
+              <BodyText>{firstPara}</BodyText>
 
-              <BodyText>
-                {`Our passion for the craft and our commitment to the personal and
-                professional development of each student are the core
-                motivations behind what we do.`}
-              </BodyText>
+              {/* Show second paragraph ONLY if it exists */}
+              {secondPara && <BodyText>{secondPara}</BodyText>}
 
-              <ViewMoreButton href="/">View More</ViewMoreButton>
+              <ViewMoreButton href={vision.buttonLink || "/"}>
+                {vision.buttonText || "View More"}
+              </ViewMoreButton>
             </ContentBox>
           </Grid>
         </Grid>
