@@ -1,6 +1,7 @@
 "use client";
-import React from "react";
-import { Box, Container, Typography, Button, Divider } from "@mui/material";
+import React, { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Box, Container, Typography, Button, Divider, Skeleton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -8,6 +9,7 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "./SpecialWorkshop.css";
+import { fetchEvents } from "../../../redux/slices/eventSlice";
 
 const SectionWrapper = styled(Box)(({ theme }) => ({
   position: "relative",
@@ -188,28 +190,63 @@ const ApplyButton = styled(Button)(({ theme }) => ({
 }));
 
 const SpecialWorkshop = () => {
-  const workshops = [
-    {
-      id: 1,
-      tag: "SPECIAL WORKSHOP",
-      title: "Theatre Show",
-      price: "$999",
-      date: "December 28, 2025",
-      instructor: "Maria Lopez",
-      image: "/bg2.png",
-      link: "/workshop/theatre-show",
-    },
-    {
-      id: 2,
-      tag: "SPECIAL WORKSHOP",
-      title: "Acting Intensive",
-      price: "$799",
-      date: "January 15, 2026",
-      instructor: "John Smith",
-      image: "/bg2.png",
-      link: "/workshop/acting-intensive",
-    },
-  ];
+  const dispatch = useDispatch();
+
+  // Get events from Redux store
+  const { events, loading } = useSelector((state) => state.event);
+
+  // Fetch events on component mount
+  useEffect(() => {
+    dispatch(fetchEvents());
+  }, [dispatch]);
+
+  // Filter special workshop events
+  const specialWorkshops = useMemo(() => {
+    return events
+      .filter(
+        (event) =>
+          event.isActive &&
+          event?.title === "Special Workshop" &&
+          event.displayOnHomePage
+      )
+      .map((event) => ({
+        id: event.id,
+        tag: event.category?.name?.toUpperCase() || "SPECIAL WORKSHOP",
+        title: event.title,
+        price: event.fees ? `$${event.fees}` : "$999",
+        date: event.startDate
+          ? new Date(event.startDate).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          : "TBA",
+        description: event.description || "",
+        buttonText: event.buttonText || "Apply Today",
+        buttonLink: event.buttonLink || null,
+        instructor: "Maria Lopez", // Static as requested
+        image: event.mediaUrl || "/bg2.png",
+      }));
+  }, [events]);
+
+  // Show loading skeleton
+  if (loading) {
+    return (
+      <SectionWrapper>
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height="100%"
+          sx={{ bgcolor: "rgba(0, 0, 0, 0.3)" }}
+        />
+      </SectionWrapper>
+    );
+  }
+
+  // Don't render if no special workshops
+  if (specialWorkshops.length === 0) {
+    return null;
+  }
 
   return (
     <SectionWrapper className="special-workshop">
@@ -224,10 +261,10 @@ const SpecialWorkshop = () => {
           bulletClass: "workshop-bullet",
           bulletActiveClass: "workshop-bullet-active",
         }}
-        loop={true}
+        loop={specialWorkshops.length > 1}
         style={{ height: "100%" }}
       >
-        {workshops.map((workshop) => (
+        {specialWorkshops.map((workshop) => (
           <SwiperSlide key={workshop.id}>
             <SlideWrapper>
               {/* Background Image */}
@@ -237,7 +274,7 @@ const SpecialWorkshop = () => {
                   alt={workshop.title}
                   fill
                   style={{ objectFit: "cover" }}
-                  priority={workshop.id === 1}
+                  priority={workshop.id === specialWorkshops[0]?.id}
                 />
               </BackgroundImage>
 
@@ -301,7 +338,16 @@ const SpecialWorkshop = () => {
                     </InfoBox>
                   </InfoGrid>
 
-                  <ApplyButton href={workshop.link}>Apply Today</ApplyButton>
+                  {/* Dynamic Button with conditional href */}
+                  {workshop.buttonLink ? (
+                    <ApplyButton href={workshop.buttonLink}>
+                      {workshop.buttonText}
+                    </ApplyButton>
+                  ) : (
+                    <ApplyButton component="div">
+                      {workshop.buttonText}
+                    </ApplyButton>
+                  )}
                 </ContentBox>
               </ContentWrapper>
             </SlideWrapper>
