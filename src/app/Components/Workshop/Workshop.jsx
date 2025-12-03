@@ -138,13 +138,11 @@ const Workshop = () => {
 
   // Get data from Redux store
   const { events, loading: eventsLoading } = useSelector((state) => state.event);
-  // const { categories, loading: categoriesLoading } = useSelector((state) => state.category);
   const { courses, loading: coursesLoading } = useSelector((state) => state.course);
 
   // Fetch data on component mount
   useEffect(() => {
     dispatch(fetchEvents());
-    // dispatch(fetchCategories());
     dispatch(fetchAllCourses());
   }, [dispatch]);
 
@@ -169,7 +167,7 @@ const Workshop = () => {
     if (cards.length < 4) {
       const remainingSlots = 4 - cards.length;
       const activeCourse = courses
-        .filter((cat) => cat.inHomePage && cat.isActive)
+        .filter((cat) => cat.inHomePage && cat.isActive && cat.name !== "Special Workshop")
         .slice(0, remainingSlots)
         .map((course) => ({
           type: "course",
