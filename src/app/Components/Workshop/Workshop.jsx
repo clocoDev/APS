@@ -167,7 +167,7 @@ const Workshop = () => {
     if (cards.length < 4) {
       const remainingSlots = 4 - cards.length;
       const activeCourse = courses
-        .filter((cat) => cat.inHomePage && cat.isActive && cat.name !== "Special Workshop")
+        .filter((cat) => cat.inHomePage && cat.isActive && cat.title !== "Special Workshop" )
         .slice(0, remainingSlots)
         .map((course) => ({
           type: "course",
