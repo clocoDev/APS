@@ -85,13 +85,37 @@ const Subtitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const BodyText = styled(Typography)(({ theme }) => ({
+const RichTextContainer = styled(Box)(({ theme }) => ({
   fontFamily: "var(--font-inter)",
   fontSize: "16px",
   color: "#181818",
   lineHeight: "30px",
   marginBottom: "15px",
   letterSpacing: "0.72px",
+  "& p": {
+    margin: "0 0 15px 0",
+  },
+  "& strong": {
+    fontWeight: 700,
+  },
+  "& em": {
+    fontStyle: "italic",
+  },
+  "& u": {
+    textDecoration: "underline",
+  },
+  "& ul, & ol": {
+    marginLeft: "20px",
+    marginBottom: "15px",
+  },
+  "& li": {
+    marginBottom: "8px",
+  },
+  "& br": {
+    display: "block",
+    content: '""',
+    marginTop: "8px",
+  },
   [theme.breakpoints.between(0, 900)]: {
     textAlign: "center",
   },
@@ -129,17 +153,6 @@ const Vision = () => {
 
   if (loading || !vision) return null;
 
-  // ---------- UPDATED LOGIC FOR NEW LINE HANDLING ----------
-  let firstPara = vision.content;
-  let secondPara = null;
-
-  if (vision.content?.includes("\n")) {
-    const parts = vision.content.split("\n");
-    firstPara = parts[0]?.trim();
-    secondPara = parts[1]?.trim() || null;
-  }
-  // ---------------------------------------------------------
-
   return (
     <SectionWrapper>
       <ContentWrapper maxWidth="xl">
@@ -167,11 +180,10 @@ const Vision = () => {
                 and commitment to each student's individual development.
               </Subtitle>
 
-              {/* Always show the first paragraph */}
-              <BodyText>{firstPara}</BodyText>
-
-              {/* Show second paragraph ONLY if it exists */}
-              {secondPara && <BodyText>{secondPara}</BodyText>}
+              {/* Render rich text HTML content */}
+              <RichTextContainer
+                dangerouslySetInnerHTML={{ __html: vision.content }}
+              />
 
               <ViewMoreButton href={vision.buttonLink || "/"}>
                 {vision.buttonText || "View More"}
