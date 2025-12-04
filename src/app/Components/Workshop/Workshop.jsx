@@ -150,14 +150,14 @@ const Workshop = () => {
   const cardsData = useMemo(() => {
     // Filter events with displayOnHomePage = true and isActive = true
     const homePageEvents = events
-      .filter((event) => event.displayOnHomePage && event.isActive)
+      .filter((event) => event.displayOnHomePage && event.isActive && event.title !== "Special Workshop")
       .slice(0, 4) // Maximum 4 events
       .map((event) => ({
         type: "event",
         id: event.id,
         title: event.title,
         image: event.mediaUrl,
-        link: `/events/${event.id}`,
+        link: `/courses/${event.buttonLink}`,
         hasImage: true,
       }));
 
@@ -174,7 +174,7 @@ const Workshop = () => {
           id: course.id,
           title: course.title,
           image: course.mediaUrl,
-          link: `/courses/${course.id}`,
+          link: `/courses/${course.buttonLink}`,
           hasImage: true,
         }));
 
@@ -185,6 +185,11 @@ const Workshop = () => {
   }, [events, courses]);
 
   const isLoading = eventsLoading || coursesLoading;
+
+  // Don't render anything if loading is complete and no data available
+  if (!isLoading && cardsData.length === 0) {
+    return null;
+  }
 
   return (
     <SectionWrapper>
@@ -214,7 +219,7 @@ const Workshop = () => {
                 />
               </Grid>
             ))
-          ) : cardsData.length > 0 ? (
+          ) : (
             // Render Cards
             cardsData.map((card, index) => (
               <Grid
@@ -259,20 +264,6 @@ const Workshop = () => {
                 </CardWrapper>
               </Grid>
             ))
-          ) : (
-            // No Data Fallback
-            <Grid size={12}>
-              <Typography
-                sx={{
-                  color: "white",
-                  textAlign: "center",
-                  padding: "40px",
-                  fontFamily: "var(--font-inter)",
-                }}
-              >
-                No events or categories available at the moment.
-              </Typography>
-            </Grid>
           )}
         </Grid>
       </Container>

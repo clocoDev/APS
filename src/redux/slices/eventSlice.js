@@ -1,11 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const initialState = {
-  events: [],
-  loading: false,
-  error: null,
-};
-
 // Async thunk to fetch all events
 export const fetchEvents = createAsyncThunk(
   "event/fetchEvents",
@@ -35,7 +29,11 @@ export const fetchEvents = createAsyncThunk(
 
 const eventSlice = createSlice({
   name: "event",
-  initialState,
+  initialState: {
+    events: [],
+    loading: false,
+    error: null,
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -55,4 +53,3 @@ const eventSlice = createSlice({
 });
 
 export default eventSlice.reducer;
-
