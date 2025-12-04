@@ -176,8 +176,7 @@ const Vision = () => {
               <MainTitle variant="h1">{vision.title}</MainTitle>
 
               <Subtitle>
-                We approach performance training with honesty, integrity 
-                and commitment to each student's individual development.
+                {vision.subTitle}
               </Subtitle>
 
               {/* Render rich text HTML content */}
