@@ -224,7 +224,7 @@ const SpecialWorkshop = () => {
         description: event.description || "",
         buttonText: event.buttonText || "Apply Today",
         buttonLink: event.buttonLink || null,
-        instructor: "Maria Lopez", // Static as requested
+        instructor: event.instructor.firstName+ " " + event.instructor.lastName, 
         image: event.mediaUrl || "/bg2.png",
       }));
   }, [events]);
