@@ -9,6 +9,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+const StyledButton = styled(Button)(({ theme }) => ({
+  fontSize: "13px",
+  color: "white",
+  fontWeight: 500,
+  borderRadius: 0,
+  margin: "0px 20px !important",
+  paddingRight: 0,
+  paddingLeft: 0,
+  "&.active": {
+    minWidth: 0,
+    //   paddingRight: 0,
+    //   paddingLeft: 0,
+    borderBottom: "3px solid #EE5B54",
+    color: "#EE5B54",
+  },
+}));
+
 export const NavLinks = [
   {
     title: "HOME",
@@ -16,7 +33,7 @@ export const NavLinks = [
   },
   {
     title: "CLASSES",
-    href: "",
+    href: "/Pages/classes",
   },
   {
     title: "TIMETABLE",
@@ -42,23 +59,6 @@ const Navigations = () => {
   }, []);
 
   if (!isMounted) return null;
-
-  const StyledButton = styled(Button)(({ theme }) => ({
-    fontSize: "13px",
-    color: "white",
-    fontWeight: 500,
-    borderRadius: 0,
-    margin: "0px 20px !important",
-    paddingRight: 0,
-    paddingLeft: 0,
-    "&.active": {
-      minWidth: 0,
-      //   paddingRight: 0,
-      //   paddingLeft: 0,
-      borderBottom: "3px solid #EE5B54",
-      color: "#EE5B54",
-    },
-  }));
 
   return (
     <>
