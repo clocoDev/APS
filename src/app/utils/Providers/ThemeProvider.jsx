@@ -22,6 +22,48 @@ const theme = createTheme({
       xl: 1536,
     },
   },
+  typography: {
+    fontFamily: "var(--font-inter)",
+    allVariants: {
+      fontFamily: "var(--font-inter)",
+    },
+    h1: {
+      fontFamily: "var(--font-inter)",
+    },
+    h2: {
+      fontFamily: "var(--font-inter)",
+    },
+    h3: {
+      fontFamily: "var(--font-inter)",
+    },
+    h4: {
+      fontFamily: "var(--font-inter)",
+    },
+    h5: {
+      fontFamily: "var(--font-inter)",
+    },
+    h6: {
+      fontFamily: "var(--font-inter)",
+    },
+    body1: {
+      fontFamily: "var(--font-inter)",
+    },
+    body2: {
+      fontFamily: "var(--font-inter)",
+    },
+    button: {
+      fontFamily: "var(--font-inter)",
+    },
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+        * {
+          font-family: var(--font-inter);
+        }
+      `,
+    },
+  },
 });
 
 export default function MuiThemeProvider({ children }) {
