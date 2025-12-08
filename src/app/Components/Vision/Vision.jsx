@@ -1,9 +1,11 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Container, Typography, Button, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
 import VisionBg from "../../../../public/visionBg.png";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchVision } from "@/redux/slices/visionSlice";
 
 const SectionWrapper = styled(Box)({
   position: "relative",
@@ -83,13 +85,37 @@ const Subtitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const BodyText = styled(Typography)(({ theme }) => ({
+const RichTextContainer = styled(Box)(({ theme }) => ({
   fontFamily: "var(--font-inter)",
   fontSize: "16px",
   color: "#181818",
   lineHeight: "30px",
   marginBottom: "15px",
   letterSpacing: "0.72px",
+  "& p": {
+    margin: "0 0 15px 0",
+  },
+  "& strong": {
+    fontWeight: 700,
+  },
+  "& em": {
+    fontStyle: "italic",
+  },
+  "& u": {
+    textDecoration: "underline",
+  },
+  "& ul, & ol": {
+    marginLeft: "20px",
+    marginBottom: "15px",
+  },
+  "& li": {
+    marginBottom: "8px",
+  },
+  "& br": {
+    display: "block",
+    content: '""',
+    marginTop: "8px",
+  },
   [theme.breakpoints.between(0, 900)]: {
     textAlign: "center",
   },
@@ -118,16 +144,25 @@ const ViewMoreButton = styled(Button)(({ theme }) => ({
 }));
 
 const Vision = () => {
+  const dispatch = useDispatch();
+  const { vision, loading } = useSelector((state) => state.vision);
+
+  useEffect(() => {
+    dispatch(fetchVision());
+  }, [dispatch]);
+
+  if (loading || !vision) return null;
+
   return (
     <SectionWrapper>
       <ContentWrapper maxWidth="xl">
         <Grid container spacing={4} alignItems="center">
-          {/* Left Side - Circular Image */}
+          {/* Left Image */}
           <Grid size={{ xs: 12, md: 5 }}>
             <CircularImageWrapper>
               <Image
-                src="/visionImg.png"
-                alt="Happy children"
+                src={vision.mediaUrl}
+                alt={vision.title}
                 fill
                 style={{ objectFit: "cover" }}
                 priority
@@ -135,28 +170,23 @@ const Vision = () => {
             </CircularImageWrapper>
           </Grid>
 
-          {/* Right Side - Content */}
+          {/* Right Content */}
           <Grid size={{ xs: 12, md: 7 }}>
             <ContentBox>
-              <MainTitle variant="h1">Our Vision - Our Mission</MainTitle>
+              <MainTitle variant="h1">{vision.title}</MainTitle>
 
               <Subtitle>
-                {`We approach performance training with honesty, integrity 
-                    and commitment to each student's individual development.`}
+                {vision.subTitle}
               </Subtitle>
 
-              <BodyText>
-                {`It is our belief the art of performance will make your heart
-                soar and enrich you as a human being.`}
-              </BodyText>
+              {/* Render rich text HTML content */}
+              <RichTextContainer
+                dangerouslySetInnerHTML={{ __html: vision.content }}
+              />
 
-              <BodyText>
-                {`Our passion for the craft and our commitment to the personal and
-                professional development of each student are the core
-                motivations behind what we do.`}
-              </BodyText>
-
-              <ViewMoreButton href="/">View More</ViewMoreButton>
+              <ViewMoreButton href={vision.buttonLink || "/"}>
+                {vision.buttonText || "View More"}
+              </ViewMoreButton>
             </ContentBox>
           </Grid>
         </Grid>
