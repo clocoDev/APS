@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import { FaRegUser } from "react-icons/fa6";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { MdSearch } from "react-icons/md";
+import Link from "next/link";
 
 const MobileSidebar = () => {
   return (
@@ -32,7 +33,7 @@ const MobileSidebar = () => {
           {NavLinks.map((navlink, i) => (
             <Button
               color="inherit"
-              href={navlink.to}
+              href={navlink.href}
               key={i}
               sx={{
                 justifyContent: "start",
@@ -40,12 +41,12 @@ const MobileSidebar = () => {
                 fontWeight: 400,
               }}
             >
-              {navlink.title}{" "}
+              {navlink.title}
             </Button>
           ))}
         </Stack>
         <Stack direction="row" paddingTop={5}>
-          <IconButton href="/auth/auth1/login" sx={{ color: "black" }}>
+          <IconButton href="/Pages/LoginPage" sx={{ color: "black" }}>
             <FaRegUser size={20} />
           </IconButton>
           <IconButton href="/auth/auth1/login" sx={{ color: "black" }}>
