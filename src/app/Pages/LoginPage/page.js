@@ -9,13 +9,21 @@ import {
     Checkbox,
     FormControlLabel,
     Divider,
+    Alert,
+    CircularProgress,
+    IconButton,
+    InputAdornment,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Image from "next/image";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { loginUser, clearError } from "../../../redux/slices/authSlice";
 import Logo from "../../../Images/logoblack.png";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const LeftSection = styled(Box)(({ theme }) => ({
     backgroundColor: "#F3DABB",
@@ -167,6 +175,10 @@ const SignInButton = styled(Button)({
     "&:hover": {
         backgroundColor: "#A17F5A",
     },
+    "&:disabled": {
+        backgroundColor: "#D4C4B0",
+        color: "#FFFFFF",
+    },
 });
 
 const GoogleButton = styled(Button)({
@@ -232,14 +244,47 @@ const DividerLine = styled(Divider)({
     flexGrow: 1,
     color: "#EAEFF4",
     borderBottomWidth: 2,
-})
+});
+
+const StyledAlert = styled(Alert)({
+    marginBottom: "20px",
+    fontFamily: "var(--font-inter)",
+    fontSize: "14px",
+    borderRadius: "8px",
+});
 
 const LoginPage = () => {
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const { isLoading, error, user, isAuthenticated } = useSelector(
+        (state) => state.auth
+    );
+
     const [formData, setFormData] = useState({
-        username: "",
+        email: "",
         password: "",
         rememberDevice: false,
     });
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    useEffect(() => {
+        // Clear any previous errors when component mounts
+        dispatch(clearError());
+    }, [dispatch]);
+
+    useEffect(() => {
+        // Handle redirect after successful login
+        if (isAuthenticated && user) {
+            if (user.role === "Admin") {
+                // Redirect to admin portal
+                window.location.href = "https://apsadmin.cloco.com.au/admin";
+            } else {
+                // Redirect to home page
+                router.push("/");
+            }
+        }
+    }, [isAuthenticated, user, router]);
 
     const handleChange = (e) => {
         const { name, value, checked, type } = e.target;
@@ -247,15 +292,33 @@ const LoginPage = () => {
             ...formData,
             [name]: type === "checkbox" ? checked : value,
         });
+        
+        // Clear error when user starts typing
+        if (error) {
+            dispatch(clearError());
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Login data:", formData);
+        
+        // Basic validation
+        if (!formData.email || !formData.password) {
+            return;
+        }
+
+        await dispatch(loginUser({ 
+            email: formData.email, 
+            password: formData.password 
+        }));
     };
 
     const handleGoogleSignIn = () => {
         console.log("Google sign in");
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     return (
@@ -287,20 +350,38 @@ const LoginPage = () => {
             <Grid size={{ xs: 12, md: 6 }}>
                 <RightSection>
                     <FormContainer>
+                        <RightLogoBox>
+                            <Image
+                                src={Logo}
+                                alt="Acting Performance Studio"
+                                width={160}
+                                height={40}
+                            />
+                        </RightLogoBox>
+                        
                         <Title>Welcome to Acting Performance Studio</Title>
                         <FormBox>
                             <Subtitle>Log in to access your dashboard</Subtitle>
 
+                            {error && (
+                                <StyledAlert severity="error" onClose={() => dispatch(clearError())}>
+                                    {error}
+                                </StyledAlert>
+                            )}
+
                             <form onSubmit={handleSubmit}>
                                 <Box>
-                                    <InputLabel>Username</InputLabel>
+                                    <InputLabel>Email</InputLabel>
                                     <StyledTextField
                                         fullWidth
-                                        name="username"
+                                        name="email"
+                                        type="email"
                                         variant="outlined"
-                                        placeholder=""
-                                        value={formData.username}
+                                        placeholder="Enter your email"
+                                        value={formData.email}
                                         onChange={handleChange}
+                                        disabled={isLoading}
+                                        required
                                     />
                                 </Box>
 
@@ -309,11 +390,27 @@ const LoginPage = () => {
                                     <StyledTextField
                                         fullWidth
                                         name="password"
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         variant="outlined"
-                                        placeholder=""
+                                        placeholder="Enter your password"
                                         value={formData.password}
                                         onChange={handleChange}
+                                        disabled={isLoading}
+                                        required
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={togglePasswordVisibility}
+                                                        edge="end"
+                                                        disabled={isLoading}
+                                                    >
+                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
                                     />
                                 </Box>
 
@@ -332,6 +429,7 @@ const LoginPage = () => {
                                                 name="rememberDevice"
                                                 checked={formData.rememberDevice}
                                                 onChange={handleChange}
+                                                disabled={isLoading}
                                             />
                                         }
                                         label="Remember this device"
@@ -344,7 +442,13 @@ const LoginPage = () => {
                                     </Link>
                                 </Box>
 
-                                <SignInButton type="submit">Sign In</SignInButton>
+                                <SignInButton 
+                                    type="submit" 
+                                    disabled={isLoading}
+                                    startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : null}
+                                >
+                                    {isLoading ? "Signing In..." : "Sign In"}
+                                </SignInButton>
                             </form>
 
                             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 4, mb: 1, width: "100%" }}>
@@ -356,6 +460,7 @@ const LoginPage = () => {
                             <GoogleButton
                                 startIcon={<FcGoogle size={20} />}
                                 onClick={handleGoogleSignIn}
+                                disabled={isLoading}
                             >
                                 Sign in with Google
                             </GoogleButton>
@@ -365,6 +470,8 @@ const LoginPage = () => {
             </Grid>
         </Grid>
     );
-}
+};
 
-export default LoginPage
+export default LoginPage;
+
+
