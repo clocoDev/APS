@@ -9,6 +9,7 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
+import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -94,11 +95,11 @@ const Description = styled(Typography)({
   lineHeight: "25px",
 });
 
-const MoreLink = styled("span")({
-  color: "#000000",
+const StyledLink = styled(Link)({
+  color: "#B38349",
   fontWeight: 700,
+  textDecoration: "none",
   cursor: "pointer",
-  lineHeight: "25px",
   "&:hover": {
     textDecoration: "underline",
   },
@@ -179,7 +180,7 @@ const CourseCard = ({ course }) => {
           {course.description.length > 120
             ? `${course.description.substring(0, 120)}... `
             : `${course.description} `}
-          <MoreLink>[More]</MoreLink>
+          <StyledLink href={`/Pages/classes/${course.id}`}>[More]</StyledLink>
         </Description>
 
         {/* Sessions Swiper */}
