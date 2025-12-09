@@ -38,21 +38,25 @@ const TutorName = styled(Typography)({
   fontWeight: 700,
   color: "#191919",
   marginBottom: "4px",
+  fontWeight: 600,
 });
 
 const TutorBio = styled(Typography)({
   fontSize: "14px",
-  color: "#666666",
+  color: "#333333",
   lineHeight: "22px",
-  marginBottom: "8px",
+  marginBottom: "5px",
+  lineHeight: "27px",
+  fontWeight: 400,
 });
 
-const ViewProfileLink = styled("span")({
+const ViewProfileLink = styled(Typography)({
   fontSize: "14px",
   color: "#191919",
-  fontWeight: 600,
+  fontWeight: 500,
   textDecoration: "underline",
   cursor: "pointer",
+  width: "fit-content",
   "&:hover": {
     color: "#B38349",
   },
